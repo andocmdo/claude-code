@@ -1,0 +1,9 @@
+{
+  "name": "internal-llm",
+  "version": "1.0.0",
+  "description": "Use the internal LARA assistant endpoint as a Claude Code provider with configurable auth and assistant ID.",
+  "author": {
+    "name": "Claude Code",
+    "email": ""
+  }
+}

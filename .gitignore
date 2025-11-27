@@ -1,2 +1,4 @@
 .DS_Store
+.claude/*.local.md
+.claude/*.local.json
 
