@@ -1,9 +1,26 @@
 #!/usr/bin/env bun
+import {
+  createFetchWithLogging,
+  installGlobalHttpLogging,
+  resolveHttpLoggingEnabled,
+} from "./http-logging";
 
 declare global {
   var process: {
     env: Record<string, string | undefined>;
+    argv: string[];
+    cwd: () => string;
   };
+}
+
+const httpLoggingEnabled = resolveHttpLoggingEnabled(process.argv);
+const fetchWithLogging = createFetchWithLogging(httpLoggingEnabled, fetch);
+installGlobalHttpLogging(httpLoggingEnabled, fetch);
+
+if (httpLoggingEnabled) {
+  console.log(
+    "[DEBUG] HTTP logging enabled - writing to /tmp/cc-http-requests.log and /tmp/cc-http-responses.log"
+  );
 }
 
 interface GitHubIssue {
@@ -24,7 +41,7 @@ interface GitHubComment {
 }
 
 async function githubRequest<T>(endpoint: string, token: string, method: string = 'GET', body?: any): Promise<T> {
-  const response = await fetch(`https://api.github.com${endpoint}`, {
+  const response = await fetchWithLogging(`https://api.github.com${endpoint}`, {
     method,
     headers: {
       Authorization: `Bearer ${token}`,
